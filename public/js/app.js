@@ -158,8 +158,7 @@
 	}
 
 	function playSound(obj) {
-		if (!obj.ready) return;
-		channel.trigger( 'client-note-on', { index: obj.index } );
+		if (!obj.ready) return false;
 		var source = soundContext.createBufferSource();
 		source.buffer = obj.note.buffer;
 		source.connect(soundContext.destination);
@@ -167,6 +166,7 @@
 		obj.ready = false;
 		// throttle the note
 		setTimeout(setNoteReady, 400, obj);
+		return true;
 	}
 
 	function setNoteReady(obj) {
@@ -279,7 +279,10 @@
 			if (average > 10) {
 				// over a small limit, consider that a movement is detected
 				// play a note and show a visual feedback to the user
-				playSound(notes[r]);
+				var note = notes[r];
+				if( playSound( note ) ) {
+					channel.trigger( 'client-note-on', { index: note.index } );
+				}
 //				notes[r].visual.show();
 //				notes[r].visual.fadeOut();
 				if(!notes[r].visual.is(':animated')) {
