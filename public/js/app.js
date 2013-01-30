@@ -1,7 +1,15 @@
 (function() {
 
+	Pusher.log = function( msg ) {
+		if( window.console && window.console.log ) {
+			window.console.log( msg );
+		}
+	};
+
 	var content = $('#content');
 	var video = $('#webcam')[0];
+	var pusher = new Pusher( '4a870a0661cd8eca89c7' );
+	var channel = pusher.subscribe( 'private-notes' );
 
 	var resize = function() {
 		var w = $(this).width();
@@ -134,15 +142,24 @@
 			var note = {
 				note: source,
 				ready: true,
-				visual: $("#note" + i)
+				visual: $("#note" + i),
+				index: i
 			};
 			notes.push(note);
 		}
 		start();
 	}
 
+	channel.bind( 'client-note-on', handleNoteEvent );
+
+	function handleNoteEvent( data ) {
+		var note = notes[ data.index ];
+		playSound( note );
+	}
+
 	function playSound(obj) {
 		if (!obj.ready) return;
+		channel.trigger( 'client-note-on', { index: obj.index } );
 		var source = soundContext.createBufferSource();
 		source.buffer = obj.note.buffer;
 		source.connect(soundContext.destination);

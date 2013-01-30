@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "express": "2.5.x",
+    "pusher": "0.1.x"
   },
   "engines": {
     "node": "0.8.x",
