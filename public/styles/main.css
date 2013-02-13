@@ -133,6 +133,10 @@ video {
     float: right;
     padding-right: 10px;
 }
+.pusher {
+    float: right;
+    padding-right: 10px;
+}
 
 #video-demo {
 	display: none;
